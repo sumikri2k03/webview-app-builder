@@ -8,7 +8,8 @@ android {
 
     defaultConfig {
         applicationId = "com.monstertechno.webview"
-        minSdk = 29
+        // Android 8.0 (API 26) and newer.
+        minSdk = 26
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
