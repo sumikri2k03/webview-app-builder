@@ -19,13 +19,11 @@ import android.webkit.JsResult;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
@@ -54,7 +52,6 @@ public class MainActivity extends AppCompatActivity implements
     private ProgressBar progressBar;
     private ScrollView errorLayout;
     private FrameLayout splashLayout;
-    private TextView errorTitle, errorMessage, errorCode;
     
     // Managers
     private WebViewManager webViewManager;
@@ -117,9 +114,6 @@ public class MainActivity extends AppCompatActivity implements
         progressBar = findViewById(R.id.progressBar);
         errorLayout = findViewById(R.id.errorLayout);
         splashLayout = findViewById(R.id.splashLayout);
-        errorTitle = findViewById(R.id.errorTitle);
-        errorMessage = findViewById(R.id.errorMessage);
-        errorCode = findViewById(R.id.errorCode);
         
         // Setup file chooser launcher
         fileChooserLauncher = registerForActivityResult(
@@ -193,63 +187,10 @@ public class MainActivity extends AppCompatActivity implements
     }
     
     private void showError(int webViewErrorCode, String rawDescription) {
-        String[] friendly = friendlyErrorText(webViewErrorCode, rawDescription);
         runOnUiThread(() -> {
             webView.setVisibility(View.GONE);
             errorLayout.setVisibility(View.VISIBLE);
-            errorTitle.setText(friendly[0]);
-            errorMessage.setText(friendly[1]);
-            if (errorCode != null) {
-                errorCode.setText("Error code: " + rawDescription);
-                errorCode.setVisibility(View.VISIBLE);
-            }
         });
-    }
-
-    private String[] friendlyErrorText(int code, String raw) {
-        switch (code) {
-            case WebViewClient.ERROR_HOST_LOOKUP:
-                return new String[]{
-                    "Can't find this website",
-                    "The website address couldn't be found. This usually means you're not connected to the internet, or the address may have changed."
-                };
-            case WebViewClient.ERROR_CONNECT:
-                return new String[]{
-                    "No internet connection",
-                    "Your device isn't connected to the internet. Please turn on Wi-Fi or mobile data and try again."
-                };
-            case WebViewClient.ERROR_TIMEOUT:
-                return new String[]{
-                    "The page is taking too long",
-                    "The website took too long to respond. It might be busy or your connection is slow. Try again in a moment."
-                };
-            case WebViewClient.ERROR_FAILED_SSL_HANDSHAKE:
-            case WebViewClient.ERROR_BAD_URL:
-                return new String[]{
-                    "Secure connection failed",
-                    "We couldn't open a secure connection to this website. The site's security certificate may be outdated or invalid."
-                };
-            case WebViewClient.ERROR_FILE_NOT_FOUND:
-                return new String[]{
-                    "Page not found",
-                    "The page you're looking for doesn't exist or may have been moved. Try going back and navigating again."
-                };
-            case WebViewClient.ERROR_TOO_MANY_REQUESTS:
-                return new String[]{
-                    "Too many requests",
-                    "You've made too many requests in a short time. Please wait a moment and then try again."
-                };
-            case WebViewClient.ERROR_PROXY_AUTHENTICATION:
-                return new String[]{
-                    "Network access blocked",
-                    "Your network requires a login or proxy authentication before you can access the internet."
-                };
-            default:
-                return new String[]{
-                    "Something went wrong",
-                    "We couldn't load the page. Please check your internet connection and try again. If the problem continues, contact support."
-                };
-        }
     }
     
     private void hideError() {
